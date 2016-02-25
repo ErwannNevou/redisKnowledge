@@ -1,31 +1,57 @@
 {
-  "name": "redisKnowledge",
-  "version": "0.0.0",
-  "description": "school Project",
+  "name": "RedisKnowledge",
+  "title": "RedisKnowledge",
+  "private": true,
+  "version": "2.0.0",
+  "tos": "ToS",
+  "description": "1 Day School Project",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "mocha -r bootstrap.test.js 'src/**/*.test.js'",
+    "test-ci": "XUNIT_FILE=${WORKSPACE}/junit.xml mocha -R xunit-file -r bootstrap.test.js 'src/**/*.test.js'",
+    "test-watch": "mocha -w -G -r bootstrap.test.js 'src/**/*.test.js'",
+    "check-build": "check-build",
+    "ci": "npm run test-ci && npm run check-build",
+    "start": "node server.js",
+    "build": "browserify src/static/main.js -o src/dist/bundle.js",
+    "build-watch": "watchify src/static/main.js -d -o src/dist/bundle.js -v"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/ErwannNevou/redisKnowledge.git"
   },
-  "keywords": [
-    "redis",
-    "school",
-    "search",
-    "tags"
-  ],
-  "author": "Erwann Nevou",
-  "license": "BSD-2-Clause",
+  "author": {
+    "name": "Nevou Erwann",
+    "url": "https://github.com/ErwannNevou",
+    "email": "erwann.nevou@gmail.com"
+  },
+  "engines": {
+    "node": "4"
+  },
   "bugs": {
     "url": "https://github.com/ErwannNevou/redisKnowledge/issues"
   },
+  "homepage": "https://github.com/ErwannNevou/redisKnowledge",
   "dependencies": {
-    "common-env": "~5.2.1",
-    "winston": "~2.1.1",
-    "hapi": "~13.0.0",
-    "good": "~6.6.0",
-    "lodash": "~4.5.1"
+    "async": "1.x.x",
+    "common-env": "5.x.x",
+    "deepmerge": "0.2.x",
+    "hapi": "11.x.x",
+    "lodash": "3.x.x",
+    "swaggerize-hapi": "1.x.x",
+    "wascally": "0.x.x",
+    "when": "3.x.x",
+    "winston": "2.x.x",
+    "inert": "~3.2.0",
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.2.1",
+    "select2": "~4.0.2-rc.1"
+  },
+  "devDependencies": {
+    "chai": "3.x.x",
+    "check-build": "*",
+    "mocha": "2.x.x",
+    "xunit-file": "0.0.6",
+    "browserify": "~13.0.0"
   }
 }

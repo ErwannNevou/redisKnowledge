@@ -1,0 +1,23 @@
+dependencies:
+  override:
+    - echo "@iadvize:registry=https://$IADVIZE_NPM_REPO_URL" > ./.npmrc
+    - echo "//$IADVIZE_NPM_REPO_URL:_password=$IADVIZE_NPM_REPO_PASSWORD" >> ./.npmrc
+    - echo "//$IADVIZE_NPM_REPO_URL:username=$IADVIZE_NPM_REPO_USERNAME" >> ./.npmrc
+    - echo "//$IADVIZE_NPM_REPO_URL:email=$IADVIZE_NPM_REPO_EMAIL" >> ./.npmrc
+    - echo "//$IADVIZE_NPM_REPO_URL:always-auth=true" >> ./.npmrc
+    - nvm exec $(node -e 'console.log(require("./package.json").engines.node);') npm install
+  cache_directories:
+      - "~/.npm"
+test:
+  override:
+    - nvm exec $(node -e 'console.log(require("./package.json").engines.node);') npm test
+  post:
+    - $(npm bin)/check-build
+
+# deployment:
+#   clever:
+#     branch: master
+#     commands:
+#       - ./scripts/ci/deploy_dev
+#       - ./scripts/ci/deploy_preprod
+#       - ./scripts/ci/deploy_prod
