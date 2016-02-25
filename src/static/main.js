@@ -1,55 +1,66 @@
 const $ = require('jquery');
 require('select2');
-var debut = 0;
-var taille = 15;
+var start = 0;
+var size = 15;
 var tags = [];
-
-$("#next").click(function() {
-  debut += taille;
-  newPage(debut,taille,tags);
-});
-
-$("#previous").click(function() {
-  if(debut>=taille) debut -= taille;
-  newPage(debut,taille,tags);
-});
-
-$(".js-example-basic-multiple").on("select2:select",function(e){
-  tags.push(e.params.data.text);
-  newPage(debut,taille,tags);
-})
-
-$(".js-example-basic-multiple").on("select2:unselect",function(e){
-  var index = tags.indexOf(e.params.data.text);
-  if (index > -1) {
-    tags.splice(index, 1);
-}
-  newPage(debut,taille,tags);
-})
+var address = "http://localhost:8080/links";
 
 $(document).ready(function(){
-  requete(debut,taille,tags);
+  request(start,size,tags);
   $("select").select2();
   getTags();
 });
 
-function newPage(debut,taille,tags){
+//// EVENTS ////
+
+// Detect clic next
+$("#next").click(function() {
+  start += size;
+  newPage(start,size,tags);
+});
+
+// Detect clic previous
+$("#previous").click(function() {
+  if(start>=size) start -= size;
+  newPage(start,size,tags);
+});
+
+// Detect add tag from field
+// Custom event from select2
+$(".js-example-basic-multiple").on("select2:select",function(e){
+  tags.push(e.params.data.text);
+  newPage(start,size,tags);
+})
+
+// Detect remove tag from field
+// Custom event from select2
+$(".js-example-basic-multiple").on("select2:unselect",function(e){
+  var index = tags.indexOf(e.params.data.text);
+  if (index > -1) tags.splice(index, 1);
+  newPage(start,size,tags);
+})
+
+// Format DOM and request
+function newPage(start,size,tags){
   $("#links").empty();
-  requete(debut,taille,tags);
+  request(start,size,tags);
 }
 
 //// DOM ////
-function render(data,debut,taille){
-  var len = data.length;
-  var fin = data.length;
-  if(debut+taille<data.length) fin = debut+taille;
+
+// Render the data
+// Pagination too but better if we can ask only some result from api
+function render(data,start,size){
+  var end = data.length;
+  // to limit amount of result to the size asked
+  if( start+size < end ) end = start+size;
   var txt = "";
-  if(len > 0){
-    for(var i=debut;i<fin;i++){
+  if(end > 0){
+    for(var i = start ; i < end ; i++){
       if(data[i]){
         txt += "<div class='link'><fieldset>";
-        txt += "<a href='"+data[i].href+"'>"+data[i].description+"</a><br>";
-        txt += "Tags : "+data[i].tags+"<br>";
+        txt += "<a href='" + data[i].href + "'>" + data[i].description + "</a><br>";
+        txt += "Tags : " + data[i].tags + "<br>";
         txt += "</fieldset></div>";
       }
     }
@@ -59,6 +70,8 @@ function render(data,debut,taille){
   }
 }
 
+// Add tags as options of select2 field
+// maybe can do better than innerHTML ?
 function addTags(tags){
   tags.forEach(function(element, index, array){
     $('#select')[0].innerHTML += '<option value="'+element+'">'+element+'</option>';
@@ -66,13 +79,15 @@ function addTags(tags){
 }
 
 //// DATA ////
-function requete(debut,taille,tags){
+// Request the api
+function request(start,size,tags){
   $.ajax({
     type: 'GET',
-    url: "http://localhost:8080/links",
+    url: address,
     success: function(data){
       if(data.data){
-        render(filter(data.data,tags),debut,taille);
+        // filter the links to render with filter
+        render(filter(data.data,tags),start,size);
       }
     },
     error: function(jqXHR, textStatus, errorThrown){
@@ -81,39 +96,50 @@ function requete(debut,taille,tags){
   });
 }
 
+// Filter the data
+// Return the data who match the tags
 function filter(data,tags){
   var list = [];
+  // Parse the data ( all links )
   data.forEach(function(elementLink, indexLink, arrayLink){
+    // If the element match tags then add to final list
     if(filterTag(elementLink,tags)) list.push(elementLink);
   })
   return list;
 }
 
+// Return if the element match tags
 function filterTag(link,tags){
-  var fin = false;
-  var somme = 0;
-  //console.log(tags);
+  var end = false;
+  var sumTags = 0;
+  // For all tags if in tags of element then increase sumTags
   tags.forEach(function(element, index, array){
     if(link.tags.indexOf(element)>-1){
-      somme++;
+      sumTags++;
     }
   });
-  //console.log(somme);
-  fin = (somme == tags.length);
-  fin = fin || (tags.length==0);
-  return fin;
+  // if all tags matched
+  end = (sumTags == tags.length);
+  // if no tags
+  end = end || (tags.length==0);
+  return end;
 }
 
+// Get all the tags from all links
+// Maybe get form api of all tags
 function getTags(){
   $.ajax({
     type: 'GET',
-    url: "http://localhost:8080/links",
+    url: address,
     success: function(data){
       if(data.data){
         var tags = [];
+        // for all links
         data.data.forEach(function(elementLink, indexLink, arrayLink){
           var stringTags = elementLink.tags.split(' ');
+          // Get tags
           stringTags.forEach(function(element, index, array){
+            // add to array if not in
             if($.inArray(element,tags)==-1) tags.push(element);
           })
         });
@@ -124,5 +150,4 @@ function getTags(){
       alert('error: ' + textStatus + ': ' + errorThrown);
     }
   });
-  return tags;
 }
