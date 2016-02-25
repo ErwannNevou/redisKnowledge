@@ -1,17 +1,6 @@
 NodeJS Service Boilerplate
 ==================================
 
-## Watch the keynote
-
-<p align="center">
-<a target="_blank" href="https://www.youtube.com/watch?v=mi0U4e0wBP4"><img style="width:100%" src="https://cloud.githubusercontent.com/assets/138050/8324879/e1fe303a-1a54-11e5-96e7-b001fb8b6927.png"></a>
-</p>
-
-## Watch the screencast and slides
-
-[![slides](https://cloud.githubusercontent.com/assets/138050/8324993/f1b3755c-1a55-11e5-8826-490619d66ce7.png)](https://www.youtube.com/watch?v=5fYogApDqHY)
-
-
 ## Setup
 
  [Nvm should be installed](https://github.com/creationix/nvm#install-script)
@@ -49,19 +38,6 @@ npm test
 npm run test-watch
 ```
 
-## Continuous Integration
-
-#### Setup Jenkins
-
-```bash
-#!/bin/bash
-cd $WORKSPACE
-export VAR_1=PRIVATE_VALUE_1
-export VAR_2=PRIVATE_VALUE_2
-# and so on...
-source ./scripts/ci/start
-```
-
 #### Debug locally
 
 ```bash
@@ -71,3 +47,11 @@ npm run ci
 ## Versioning
 
 This project follows the [Semantic Versioning 2.0.0](http://semver.org/).
+
+## Context
+
+This project is from a skeleton of a hapi project. We built an api to return the json. Then we built a webpage to use this api and filter from tags.
+
+## TODO
+
+Better api to filter in api and filter the amount of result wanted.
