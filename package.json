@@ -1,0 +1,31 @@
+{
+  "name": "redisKnowledge",
+  "version": "0.0.0",
+  "description": "school Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ErwannNevou/redisKnowledge.git"
+  },
+  "keywords": [
+    "redis",
+    "school",
+    "search",
+    "tags"
+  ],
+  "author": "Erwann Nevou",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/ErwannNevou/redisKnowledge/issues"
+  },
+  "dependencies": {
+    "common-env": "~5.2.1",
+    "winston": "~2.1.1",
+    "hapi": "~13.0.0",
+    "good": "~6.6.0",
+    "lodash": "~4.5.1"
+  }
+}
